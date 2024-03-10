@@ -29,7 +29,7 @@ class FileStorage:
 
     def new(self, obj):
         """set in __objects obj with key """
-        id = obj.to_dict().["id"]
+        id = obj.to_dict()["id"]
         className = obj.to_dict()["__class__"]
         keyName = className+"."+id
         FileStorage.__objects[keyName] = obj
@@ -45,25 +45,12 @@ class FileStorage:
 
     def reload(self):
         """ Reload objects from JSON file into __objects dictionary """
-        filepath = FileStorage.__file_path
-        data = FileStorage.__objects
-        if os.path.exists(filepath):
-            try:
-                with open(filepath) as f:
-                    for key, value in json.load(f).items():
-                        if "BaseModel" in key:
-                            data[key] = BaseModel(**value)
-                        if "User" in key:
-                            data[key] = User(**value)
-                        if "Place" in key:
-                            data[key] = Place(**value)
-                        if "State" in key:
-                            data[key] = State(**value)
-                        if "City" in key:
-                            data[key] = City(**value)
-                        if "Amenity" in key:
-                            data[key] = Amenity(**value)
-                        if "Review" in key:
-                            data[key] = Review(**value)
-            except Exception:
-                pass
+        try:
+            with open(FileStorage.__file_path) as f:
+                objdict = json.load(f)
+                for o in objdict.values():
+                    cls_name = o["__class__"]
+                    del o["__class__"]
+                    self.new(eval(cls_name)(**o))
+        except FileNotFoundError:
+            return

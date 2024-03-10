@@ -31,7 +31,7 @@ class HBNBCommand(cmd.Cmd):
         return True
 
     def do_quit(self, arg):
-        """Quit command to exit"""
+        """Quit command to exit the program"""
         return True
 
     def emptyline(self):
@@ -69,13 +69,13 @@ Usage: clear"""
         args = arg.split()
         _len = len(arg.split())
         if _len == 0:
-            print("** missing class name **")
+            print("** class name missing **")
             return False
         if args[0] not in HBNBCommand.all_class:
-            print("** non existing class **")
+            print("** class doesn't exist **")
             return False
         if _len < 2 and _id_flag:
-            print("** missing instance id **")
+            print("** instance id missing **")
             return False
         if _id_flag and args[0]+"."+args[1] not in storage.all():
             print("** no instance found **")

@@ -14,10 +14,10 @@ class BaseModel:
         """
         t_format =  "%Y-%m-&dT&H:%M:%S.%f"
         if kwargs:
-            for key, value in kwargs.item():
+            for key, value in kwargs.items():
                 if key == "__class__":
                     continue
-                elif key == "created_at" or  "updated_at":
+                elif key == "created_at" or key == "updated_at":
                     setattr(self, key, datetime.strptime(value, t_format))
                 else:
                     setattr(self, key, value)

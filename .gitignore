@@ -2,4 +2,6 @@ models/__pycache__/*
 models/engine/__pycache__/*
 file.json
 reset_json
-.*.swp
+.*.swp__pycache__/
+.console.py.swo
+

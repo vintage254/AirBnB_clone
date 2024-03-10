@@ -2,9 +2,17 @@
 """
 unittest for the base model class 
 """
+import json
 import unittest
 from models.base_model import BaseModel
+from datetime import datetime
+import models
+from io import StringIO
+import sys
+from unittest.mock import patch
+
 class TestBasemodel(unittest.TestCase):
+    """Test cases for BaseModel class."""
     def test_init(self):
         test_model = BaseModel()
 

@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-""" Doc Here """
+""" File Storage Module Documentation """
 import json
 import os
 from models.base_model import BaseModel
@@ -9,33 +9,40 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
-# from models.base_model import BaseModel #avoid circular
 
 
 class FileStorage:
-    """Represent an abstracted storage engine.
+    """
+    File Storage Class
 
-    Attributes:
-        __file_path (str): The name of the file to save objects to.
-        __objects (dict): A dictionary of instantiated objects.
+    This class manages the serialization and deserialization of instances
+    of the different models to and from JSON files.
     """
 
     __file_path = "file.json"
     __objects = {}
 
     def all(self):
-        """Return the dictionary __objects. """
+        """
+        Retrieve all objects.
+
+        Return the dictionary __objects.
+        """
         return FileStorage.__objects
 
     def new(self, obj):
-        """set in __objects obj with key """
+        """
+        Add a new object to the dictionary.
+
+        set in __objects obj to be added with key 
+        """
         id = obj.to_dict()["id"]
         className = obj.to_dict()["__class__"]
         keyName = className+"."+id
         FileStorage.__objects[keyName] = obj
 
     def save(self):
-        """ Serialize __objects to the JSON file __file_path """
+        """ Save obj to JSON file """
         filepath = FileStorage.__file_path
         data = dict(FileStorage.__objects)
         for key, value in data.items():
@@ -44,7 +51,9 @@ class FileStorage:
             json.dump(data, f)
 
     def reload(self):
-        """ Reload objects from JSON file into __objects dictionary """
+        """
+         Reload objects from JSON file.
+        """
         try:
             with open(FileStorage.__file_path) as f:
                 objdict = json.load(f)

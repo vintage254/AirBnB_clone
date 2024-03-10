@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 """ Console module for AirBnB project """
 import cmd
+import re
+import json
 from models.base_model import BaseModel
 from models.user import User
 from models.place import Place
@@ -8,12 +10,12 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
-"""from models import storage"""
-import re
-import json
+from models import storage
 
 class HBNBCommand(cmd.Cmd):
-    """the main class to define the console interpreter"""
+    """
+    the main class to define the console interpreter
+    """
     prompt = "(hbnb) "
 
     all_class = ["BaseModel", "User", "State",
@@ -27,7 +29,8 @@ class HBNBCommand(cmd.Cmd):
     attr_float = ["latitude", "longitude"]
 
     def do_EOF(self, arg):
-        """Ctrl-D to exit"""
+        """Ctrl-D to exit the program"""
+        print()
         return True
 
     def do_quit(self, arg):
@@ -39,8 +42,7 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, arg):
-        """Create new instance :
-Usage: create <class name>"""
+        """Create new instance : Usage: create <class name>"""
         classes = {
             "BaseModel": BaseModel,
             "User": User,
@@ -58,8 +60,7 @@ Usage: create <class name>"""
             print(new.id)
 
     def do_clear(self, arg):
-        """Clear data storage :
-Usage: clear"""
+        """Clear data storage : Usage: clear"""
         storage.all().clear()
         self.do_all(arg)
         print("** cleared storage! **")
@@ -81,7 +82,7 @@ Usage: clear"""
             print("** no instance found **")
             return False
         if _len == 2 and _att_flag:
-            print("** missing attribute name **")
+            print("** attribute name missing **")
             return False
         if _len == 3 and _att_flag:
             print("** value missing **")
@@ -89,8 +90,13 @@ Usage: clear"""
         return True
 
     def do_show(self, arg):
-        """Printing string rep of an instance
-Usage: show <class name> <id>\n"""
+        """
+        Prints the string representation of an instance based on the class
+        name and id.
+
+        Usage:
+          show <class name> <id>
+        """
         if self.valid(arg, True):
             args = arg.split()
             _key = args[0]+"."+args[1]
@@ -138,7 +144,7 @@ Usage2: all <class name>\n"""
 
     def do_update(self, arg):
         """Updates an instance by adding or updating attribute
-Usage: update <class name> <id> <attribute name> \"<attribute value>\"\n"""
+Usage: update <class name> <id> <attribute name> "<attribute value>"""
         if self.valid(arg, True, True):
             args = arg.split()
             _key = args[0]+"."+args[1]
@@ -160,7 +166,7 @@ Usage: update <class name> <id> <attribute name> \"<attribute value>\"\n"""
 
     def count(self, arg):
         """the number of instances of a class
-Usage: <class name>.count()\n"""
+Usage: <class name>.count()"""
         count = 0
         for key in storage.all():
             if arg[:-1] in key:

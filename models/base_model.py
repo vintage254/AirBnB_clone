@@ -12,7 +12,7 @@ class BaseModel:
         created_at: datetime - assign with the current datetime when an instance is created
         updated_at: datetime - assign with the current datetime when an instance is created and it will be updated every time you change your object
         """
-        t_format =  "%Y-%m-&dT&H:%M:%S.%f"
+        t_format =  "%Y-%m-%dT%H:%M:%S.%f"
         if kwargs:
             for key, value in kwargs.items():
                 if key == "__class__":

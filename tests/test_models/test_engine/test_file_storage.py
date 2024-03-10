@@ -2,8 +2,8 @@
 import os
 import json
 import unittest
-from ..models.base_model import BaseModel
-from ..models.engine.file_storage import FileStorage
+from models.base_model import BaseModel
+from models.engine.file_storage import FileStorage
 class TestFileStorage_instantiation(unittest.TestCase):
     """Unittests for testing instantiation of the FileStorage class."""
 
@@ -15,21 +15,16 @@ class TestFileStorage_instantiation(unittest.TestCase):
             FileStorage(None)
 class TestFileStorage_methods(unittest.TestCase):
     """Unittests for testing methods of the FileStorage class."""
-    def setup(self):
+    def setUp(self):
         try:
             os.rename("file.json", "tmp")
         except IOError:
             pass
     def tearDown(self):
         try:
-            os.remove("file.json")
-        except IOError:
-            pass
-        try:
             os.rename("tmp", "file.json")
-        except IOError:
+        except FileNotFoundError:
             pass
-        FileStorage._FileStorage__objects = {}
     def test_all_with_arg(self):
         with self.assertRaises(TypeError):
             FileStorage().all(None)

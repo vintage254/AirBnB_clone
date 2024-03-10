@@ -13,24 +13,29 @@ from models.review import Review
 
 
 class FileStorage:
-    """ doc doc """
+    """Represent an abstracted storage engine.
+
+    Attributes:
+        __file_path (str): The name of the file to save objects to.
+        __objects (dict): A dictionary of instantiated objects.
+    """
 
     __file_path = "file.json"
     __objects = {}
 
     def all(self):
-        """ doc doc """
+        """Return the dictionary __objects. """
         return FileStorage.__objects
 
     def new(self, obj):
-        """ doc doc """
-        id = obj.to_dict()["id"]
+        """set in __objects obj with key """
+        id = obj.to_dict().["id"]
         className = obj.to_dict()["__class__"]
         keyName = className+"."+id
         FileStorage.__objects[keyName] = obj
 
     def save(self):
-        """ doc doc """
+        """ Serialize __objects to the JSON file __file_path """
         filepath = FileStorage.__file_path
         data = dict(FileStorage.__objects)
         for key, value in data.items():
@@ -39,26 +44,13 @@ class FileStorage:
             json.dump(data, f)
 
     def reload(self):
-        """ doc doc """
-        filepath = FileStorage.__file_path
-        data = FileStorage.__objects
-        if os.path.exists(filepath):
-            try:
-                with open(filepath) as f:
-                    for key, value in json.load(f).items():
-                        if "BaseModel" in key:
-                            data[key] = BaseModel(**value)
-                        if "User" in key:
-                            data[key] = User(**value)
-                        if "Place" in key:
-                            data[key] = Place(**value)
-                        if "State" in key:
-                            data[key] = State(**value)
-                        if "City" in key:
-                            data[key] = City(**value)
-                        if "Amenity" in key:
-                            data[key] = Amenity(**value)
-                        if "Review" in key:
-                            data[key] = Review(**value)
-            except Exception:
-                pass
+        """ Reload objects from JSON file into __objects dictionary """
+        try:
+            with open(FileStorage.__file_path) as f:
+                objdict = json.load(f)
+                for o in objdict.values():
+                    cls_name = o["__class__"]
+                    del o["__class__"]
+                    self.new(eval(cls_name)(**o))
+        except FileNotFoundError:
+            return

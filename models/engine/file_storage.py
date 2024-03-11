@@ -9,7 +9,6 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
-from models import storage
 
 
 class FileStorage:
@@ -62,8 +61,7 @@ class FileStorage:
 
                 for key, value in json_object.items():
                     cls_name, object_id = key.split('.')
-                    cls = getattr(models, cls_name)
-                    instance = cls(**value)
+                    instance = eval(cls_name)(**value)
                     FileStorage.__objects[key] = instance
         except FileNotFoundError:
             pass

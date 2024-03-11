@@ -1,6 +1,6 @@
 #!/usr/bin/python3
-""" File Storage Module Documentation """
-import json
+""" File Storage Module for serialization and deserialization"""
+from json import dump, load
 import os
 from models.base_model import BaseModel
 from models.user import User
@@ -36,30 +36,32 @@ class FileStorage:
 
         set in __objects obj to be added with key 
         """
-        id = obj.to_dict()["id"]
-        className = obj.to_dict()["__class__"]
-        keyName = className+"."+id
-        FileStorage.__objects[keyName] = obj
+        obj_class_name = obj.__class__.__name__
+        obj_id = obj.id
+
+        FileStorage.__objects[obj_class_name + '.' + obj_id] = obj
 
     def save(self):
         """ Save obj to JSON file """
-        filepath = FileStorage.__file_path
-        data = dict(FileStorage.__objects)
-        for key, value in data.items():
-            data[key] = value.to_dict()
-        with open(filepath, 'w') as f:
-            json.dump(data, f)
+        allobj_dict = FileStorage.__objects
+
+        formatted_objects_dict = \
+            {key: allobj_dict[key].to_dict() for key in allobj_dict.keys()}
+
+        with open(FileStorage.__file_path, "w", encoding='utf-8') as json_file:
+            dump(formatted_objects_dict, json_file)
 
     def reload(self):
         """
          Reload objects from JSON file.
         """
         try:
-            with open(FileStorage.__file_path) as f:
-                objdict = json.load(f)
-                for o in objdict.values():
-                    cls_name = o["__class__"]
-                    del o["__class__"]
-                    self.new(eval(cls_name)(**o))
+            with open(FileStorage.__file_path, 'r', encoding='utf-8') as f:
+                json_object = load(f)
+
+                for key, value in json_object.items():
+                    cls_name, object_id = key.split('.')
+                    instance = eval(cls_name)(**value)
+                    FileStorage.__objects[key] = instance
         except FileNotFoundError:
-            return
+            pass

@@ -12,6 +12,7 @@ from models.amenity import Amenity
 from models.review import Review
 from models import storage
 
+
 class HBNBCommand(cmd.Cmd):
     """
     the main class to define the console interpreter

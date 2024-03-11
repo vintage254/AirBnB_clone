@@ -9,6 +9,7 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
+from models import storage
 
 
 class FileStorage:
@@ -34,7 +35,7 @@ class FileStorage:
         """
         Add a new object to the dictionary.
 
-        set in __objects obj to be added with key 
+        set in __objects obj to be added with key
         """
         obj_class_name = obj.__class__.__name__
         obj_id = obj.id
@@ -61,7 +62,8 @@ class FileStorage:
 
                 for key, value in json_object.items():
                     cls_name, object_id = key.split('.')
-                    instance = eval(cls_name)(**value)
+                    cls = getattr(models, cls_name)
+                    instance = cls(**value)
                     FileStorage.__objects[key] = instance
         except FileNotFoundError:
             pass
